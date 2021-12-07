@@ -99,7 +99,7 @@ client.on("message", async maybeCommand => {
 			await maybeCommand.channel.send({ content: `You can only ban over a a 5 minute range, and the two selected messages span a ${banTimeRange / 1000 / 60} minute range.` })
 			return
 		}
-		const confirmationMessage = await maybeCommand.channel.send({ content: `Are you sure? You are going to ban ${toBan.length} users who joined from ${firstBannedMessage.author.username}#${firstBannedMessage.author.discriminator} (\`${firstBannedMessage.createdAt.toUTCString()}\`) ${lastBannedMessage.author.username}#${lastBannedMessage.author.discriminator} to (\`${lastBannedMessage.createdAt.toUTCString()}\`)` })
+		const confirmationMessage = await maybeCommand.channel.send({ content: `Are you sure? You are going to ban ${toBan.length} users who joined from ${lastBannedMessage.author.tag} (\`${firstBannedMessage.createdAt.toUTCString()}\`) ${lastBannedMessage.author.tag} to (\`${lastBannedMessage.createdAt.toUTCString()}\`)` })
 		const allReactions = await confirmationMessage.awaitReactions(reaction => ["👍"].includes(reaction.emoji.name), { max: 1, time: 60000, errors: ["time"] })
 		const reaction = allReactions.first();
 		console.log('reaction parsed')
@@ -109,11 +109,11 @@ client.on("message", async maybeCommand => {
 		if (!reaction || reaction.emoji.name !== "👍") return
 
 		for (const userMessage of toBan) {
-			console.log(`Banning: ${userMessage.author.username}#${userMessage.author.discriminator} (${userMessage.author.id})`)
+			console.log(`Banning: ${userMessage.author.tag} (${userMessage.author.id})`)
 			try {
 				await commandServer.members.ban(userMessage.author.id, { days: 7, reason: "Join raid." })
 			} catch (error: unknown) {
-				console.log(`Failed to ban ${userMessage.author.username}#${userMessage.author.discriminator} (${userMessage.author.id}): ${error instanceof Error ? error.message : error}`)
+				console.log(`Failed to ban ${userMessage.author.tag} (${userMessage.author.id}): ${error instanceof Error ? error.message : error}`)
 			}
 		}
 	} catch (error: unknown) {
