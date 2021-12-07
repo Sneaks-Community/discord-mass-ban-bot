@@ -79,10 +79,10 @@ client.on("message", async maybeCommand => {
 		console.log(`Banning everyone from message ID ${lastMessageId} to ${currentMessageId}`)
 		let doneCollecting = false;
 		while (!doneCollecting) {
-			const messages = await joinLogChannel.messages.fetch({ limit: 50, before: (currentMessageId + 1n).toString(10) })
+			const messages = await joinLogChannel.messages.fetch({ limit: 50, before: (currentMessageId + 1n).toString(10) })//Might need to change limit
 			messages.forEach(message => {
 				const messageId = BigInt(message.id)
-				if (message.type !== 'GUILD_MEMBER_JOIN') return
+				if (message.type !== 'GUILD_MEMBER_JOIN') return //This should make it ok to use in general
 				if (messageId < lastMessageId) return (doneCollecting = true)
 				toBan.push(message)
 				currentMessageId = BigInt(message.id)
@@ -100,7 +100,7 @@ client.on("message", async maybeCommand => {
 			return
 		}
 		const confirmationMessage = await maybeCommand.channel.send({ content: `Are you sure? You are going to ban ${toBan.length} users who joined from ${lastBannedMessage.author.tag} (\`${firstBannedMessage.createdAt.toUTCString()}\`) ${lastBannedMessage.author.tag} to (\`${lastBannedMessage.createdAt.toUTCString()}\`)` })
-		const allReactions = await confirmationMessage.awaitReactions(reaction => ["👍"].includes(reaction.emoji.name), { max: 1, time: 60000, errors: ["time"] })
+		const allReactions = await confirmationMessage.awaitReactions(reaction => ["👍"].includes(reaction.emoji.name), { max: 1, time: 60000, errors: ["time"] })// I think awaitReactions is deprecated //we also want to make sure an admin is reacting
 		const reaction = allReactions.first();
 		console.log('reaction parsed')
 		if (!reaction) return
@@ -146,5 +146,6 @@ function getRequiredEnvironmentVariable(name: string) {
 	return value
 }
 
+//idk what these do
 process.on('SIGTERM', exit)
 process.on('SIGINT', exit)
