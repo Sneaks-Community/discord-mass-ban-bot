@@ -99,7 +99,7 @@ client.on("message", async maybeCommand => {
 			await maybeCommand.channel.send({ content: `You can only ban over a a 5 minute range, and the two selected messages span a ${banTimeRange / 1000 / 60} minute range.` })
 			return
 		}
-		const confirmationMessage = await maybeCommand.channel.send({ content: `Are you sure? You are going to ban ${toBan.length} users who joined from ${lastBannedMessage.author.tag} (\`${firstBannedMessage.createdAt.toUTCString()}\`) ${lastBannedMessage.author.tag} to (\`${lastBannedMessage.createdAt.toUTCString()}\`)` })
+		const confirmationMessage = await maybeCommand.channel.send({ content: `Are you sure? You are going to ban ${toBan.length} users who joined from ${lastBannedMessage.author.tag} (\`<t:${firstBannedMessage.createdAt.toUTCString()}>\`) ${lastBannedMessage.author.tag} to (\`<t:${lastBannedMessage.createdAt.toUTCString()}>\`)` })
 		const allReactions = await confirmationMessage.awaitReactions(reaction => ["👍"].includes(reaction.emoji.name), { max: 1, time: 60000, errors: ["time"] })// I think awaitReactions is deprecated //we also want to make sure an admin is reacting
 		const reaction = allReactions.first();
 		console.log('reaction parsed')
