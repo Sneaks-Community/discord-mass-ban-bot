@@ -5,12 +5,14 @@ const serverId = getRequiredEnvironmentVariable('DISCORD_SERVER_ID')
 const joinLogChannelId = getRequiredEnvironmentVariable('DISCORD_JOIN_LOG_CHANNEL_ID')
 const adminChannelId = getRequiredEnvironmentVariable('DISCORD_ADMIN_CHANNEL_ID')
 const botAuthToken = getRequiredEnvironmentVariable('DISCORD_BOT_AUTH_TOKEN')
+const adminRoleID = getRequiredEnvironmentVariable('DISCORD_ADMIN_ROLE_ID')
 
 const startTime = new Date();
 let lastJoinTime = startTime
 let consecutiveJoins = 0
 
 function RaidCheck(serverId: string) {
+	const server = client.guilds.cache.get(serverId);
 	const adminChannel = getChannel(serverId, adminChannelId)
 
 	const currentTime = new Date();
@@ -28,8 +30,9 @@ function RaidCheck(serverId: string) {
 		consecutiveJoins++
 		console.log(`I saw a consectutive join`)
 
-		if (consecutiveJoins > 3) {
+		if (consecutiveJoins == 5) { // 5 consecutive joins in 30 seconds send message to admin channel
 			console.log(`I saw more than 3 consecutive joins!!`)
+			adminChannel.send(server?.roles.cache.get(adminRoleID)?.toString() + "") //pings admin role
 			adminChannel.send(`RUN FOR COVER - A MASS DM SPAMBOT MIGHT BE JOINING OUR SERVER!`)
 			adminChannel.send(`Can someone monitor the welcome channel and ban these accounts? format is: "ban [WelcomeMessageIDStart] [WelcomeMessageIDEnd]"`)
 		}
